@@ -102,8 +102,8 @@ public class MapBoard : MonoBehaviour
         foreach(var idx2D in idx2D_around4ways)
         {
             // 2D 좌표가 유효한지 검사
-            if(idx2D.x.IsInRange(0, MapCellSize.x)==false) continue;
-            if(idx2D.y.IsInRange(0, MapCellSize.y)==false) continue;
+            if (idx2D.x.IsInRange(0, MapCellSize.x) == false) { continue; }
+            if (idx2D.y.IsInRange(0, MapCellSize.y) == false) { continue; }
 
             idx1D_around4ways.Add(GetTileIdx1D(idx2D));
         }

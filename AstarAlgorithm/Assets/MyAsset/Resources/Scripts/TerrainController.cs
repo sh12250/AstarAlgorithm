@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class TerrainController : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class TerrainController : MonoBehaviour
     private TerrainType terrainType = TerrainType.NONE;
     private MapBoard mapController = default;
 
-    public bool IsPossible { get; private set; } = false;
+    public bool IsPassable { get; private set; } = false;
     public int TileIdx1D { get; private set; } = -1;
     public Vector2Int TileIdx2D { get; private set; } = default;
 
@@ -38,6 +37,45 @@ public class TerrainController : MonoBehaviour
         terrainType = type_;
         mapController = mapController_;
         TileIdx1D = tileIdx1D_;
-        // TileIdx2D = mapController.GetTile
-    }
+        TileIdx2D = mapController.GetTileIdx2D(TileIdx1D);
+
+        string prefabName = string.Empty;
+        switch (type_)
+        {
+            case TerrainType.PLAIN_PASS:
+                prefabName = RDefine.TERRAIN_PREF_PLAIN;
+                IsPassable = true;
+                break;
+            case TerrainType.OCEAN_N_PASS:
+                prefabName = RDefine.TERRAIN_PREF_OCEAN;
+                IsPassable = true;
+                break;
+            default:
+                prefabName = "Tile_Default";
+                IsPassable = false;
+                break;
+        }       // switch: 타일의 타입별로 다른 설정을 한다
+
+        this.name = string.Format("{0}_{1}", prefabName, TileIdx1D);
+    }       // SetupTerrain()
+
+    //! 지형의 Front 색상을 변경한다
+    public void SetTileActiveColor(RDefine.TileStatusColor tileStatus)
+    {
+        switch (tileStatus)
+        {
+            case RDefine.TileStatusColor.SELECTED:
+                frontRenderer.color = selectedColor; 
+                break;
+            case RDefine.TileStatusColor.SEARCH:
+                frontRenderer.color = searchColor; 
+                break;
+            case RDefine.TileStatusColor.INACTIVE:
+                frontRenderer.color = inactiveColor; 
+                break;
+            default:
+                frontRenderer.color = defaultColor; 
+                break;
+        }
+    }       // SetTileActiveColor()
 }
