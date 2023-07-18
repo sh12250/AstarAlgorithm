@@ -35,8 +35,7 @@ public static partial class GFunc
     }       // Shuffle()
 
     //! 리스트의 element 를 다른 값과 Swap 하는 함수
-    public static void Swap<T>(this List<T> targetList, 
-        ref T swapValue, int swapIdx)
+    public static void Swap<T>(this List<T> targetList, ref T swapValue, int swapIdx)
     {
         T tempValue = targetList[swapIdx];
         targetList[swapIdx] = swapValue;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class TerrainMap : TerrainController
+public class TerrainMap : TileMapController
 {
     private const string TERRAIN_TILEMAP_OBJ_NAME = "TerrainTilemap";
 
@@ -23,7 +23,7 @@ public class TerrainMap : TerrainController
         // { 타일의 x축 갯수와 전체 타일의 수로 맵의 가로, 세로 사이즈를 연산한다
         mapCellSize = Vector2Int.zero;
         float tempTileY = allTileObjs[0].transform.localPosition.y;
-        for (int i = 0; i < allTerrains.Count; i++)
+        for (int i = 0; i < allTileObjs.Count; i++)
         {
             if (tempTileY.IsEquals(allTileObjs[i].transform.localPosition.y) == false)
             {
@@ -46,8 +46,58 @@ public class TerrainMap : TerrainController
     private void Start()
     {
         // { 타일맵의 일부를 일정 확률로 다른 타일로 교체하는 로직
-        // GameObject chageTilePrefab
+        GameObject changeTilePrefab = ResManager.Instance.terrainPrefabs[RDefine.TERRAIN_PREF_OCEAN];
+
+        // 타일맵 중에 어느 정도를 바다로 교체할 것인지 결정
+        const float CHANGE_PERCENTAGE = 15.0f;
+        float correctChangePercentage = allTileObjs.Count * (CHANGE_PERCENTAGE / 100.0f);
+
+        // 바다로 교체할 타일의 정보를 리스트 형태로 생성해서 섞는다
+        List<int> changedTileResult = GFunc.CreateList(allTileObjs.Count, 1);
+        changedTileResult.Shuffle();
+
+        GameObject tempChangeTile = default;
+        for (int i = 0; i < allTileObjs.Count; i++)
+        {
+            if (correctChangePercentage <= changedTileResult[i])
+            {
+                continue;
+            }
+
+            // 프리팹을 인스턴스화해서 교체할 타일의 트랜스폼을 복사 
+            tempChangeTile = Instantiate(changeTilePrefab, tileMap.transform);
+            tempChangeTile.name = changeTilePrefab.name;
+            tempChangeTile.SetLocalScale(allTileObjs[i].transform.localScale);
+            tempChangeTile.SetLocalPos(allTileObjs[i].transform.localPosition);
+
+            allTileObjs.Swap(ref tempChangeTile, i);
+            tempChangeTile.DestroyObj();
+        }
         // } 타일맵의 일부를 일정 확률로 다른 타일로 교체하는 로직
+
+        // { 기존에 존재하는 타일의 순서를 조정하고, 컨트롤러를 캐싱하는 로직
+        TerrainController tempTerrain = default;
+        TerrainType terrainType = TerrainType.NONE;
+
+        int loopcnt = 0;
+        foreach (GameObject tile_ in allTileObjs)
+        {
+            tempTerrain = tile_.GetComponent<TerrainController>();
+            switch (tempTerrain.name)
+            {
+                case RDefine.TERRAIN_PREF_PLAIN:
+                    terrainType = TerrainType.PLAIN_PASS; break;
+                case RDefine.TERRAIN_PREF_OCEAN:
+                    terrainType = TerrainType.OCEAN_N_PASS; break;
+                default:
+                    terrainType = TerrainType.NONE; break;
+            }       // switch: 지형별로 다른 설정을 한다
+
+            tempTerrain.transform.SetAsFirstSibling();
+            allTerrains.Add(tempTerrain);
+            loopcnt += 1;
+        }       // loop: 타일의 이름과 랜더링 순서대로 정력하는 루프
+        // } 기존에 존재하는 타일의 순서를 조정하고, 컨트롤러를 캐싱하는 로직
     }
 
     //! 초기화된 타일의 정보로 연산한 맵의 가로, 세로 크기를 리턴하는 함수
@@ -65,12 +115,11 @@ public class TerrainMap : TerrainController
     //! 인덱스에 해당하는 타일을 리턴하는 함수
     public TerrainController GetTile(int tileIdx1D)
     {
-        if(allTerrains.IsValid(tileIdx1D))
+        if (allTerrains.IsValid(tileIdx1D))
         {
             return allTerrains[tileIdx1D];
         }
 
         return default;
     }       // GetTile()
-
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class RDefine
 {
-    public const string TERRAIN_PREF_OCEAN = "Terrain_Ocean";
-    public const string TERRAIN_PREF_PLAIN = "Terrain_Plain";
+    public const string TERRAIN_PREF_OCEAN = "OceanTile";
+    public const string TERRAIN_PREF_PLAIN = "PlainTile";
 
     public const string OBSTACLE_PREF_PLAIN_CASTLE = "Obstacle_PlainCastle";
 
