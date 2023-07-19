@@ -79,7 +79,7 @@ public class TerrainMap : TileMapController
         TerrainController tempTerrain = default;
         TerrainType terrainType = TerrainType.NONE;
 
-        int loopcnt = 0;
+        int loopCnt = 0;
         foreach (GameObject tile_ in allTileObjs)
         {
             tempTerrain = tile_.GetComponent<TerrainController>();
@@ -93,9 +93,10 @@ public class TerrainMap : TileMapController
                     terrainType = TerrainType.NONE; break;
             }       // switch: 지형별로 다른 설정을 한다
 
+            tempTerrain.SetupTerrain(mapController, terrainType, loopCnt);
             tempTerrain.transform.SetAsFirstSibling();
             allTerrains.Add(tempTerrain);
-            loopcnt += 1;
+            loopCnt += 1;
         }       // loop: 타일의 이름과 랜더링 순서대로 정력하는 루프
         // } 기존에 존재하는 타일의 순서를 조정하고, 컨트롤러를 캐싱하는 로직
     }
