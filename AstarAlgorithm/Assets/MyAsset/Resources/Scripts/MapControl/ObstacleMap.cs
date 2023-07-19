@@ -104,6 +104,8 @@ public class ObstacleMap : TileMapController
             tempChangeTile = default;
         }       // loop: 출발지와 목적지를 인스턴스화해서 캐싱하는 루프
         // } 출발지와 목적지에 지물을 추가한다
+
+        Update_SourceDestToPathFinder();
     }       // DoStart()
 
     //! 지물을 추가한다
@@ -111,4 +113,11 @@ public class ObstacleMap : TileMapController
     {
         allTileObjs.Add(obstacle_);
     }       // Add_Obstacle()
+
+    //! 패스 파인더에 출발지와 목적지를 설정한다
+    public void Update_SourceDestToPathFinder()
+    {
+        PathFinder.Instance.sourceObj = volcanoObjs[0];
+        PathFinder.Instance.destinationObj = volcanoObjs[1];
+    }       // Update_SourceDestToPathFinder()
 }

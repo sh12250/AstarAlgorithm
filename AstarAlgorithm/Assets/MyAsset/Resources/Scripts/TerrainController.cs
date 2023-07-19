@@ -48,7 +48,7 @@ public class TerrainController : MonoBehaviour
                 break;
             case TerrainType.OCEAN_N_PASS:
                 prefabName = RDefine.TERRAIN_PREF_OCEAN;
-                IsPassable = true;
+                IsPassable = false;
                 break;
             default:
                 prefabName = "Tile_Default";
