@@ -17,6 +17,10 @@ public class MapBoard : MonoBehaviour
     {
         // { 매니저 스크립트를 초기화한다
         ResManager.Instance.Create();
+
+        // PathFinder 초기화
+        PathFinder.Instance.Create();
+        PathFinder.Instance.mapBoard = this;
         // } 매니저 스크립트를 초기화한다
 
         // { 맵에 지형을 초기화하여 배치한다
@@ -30,7 +34,7 @@ public class MapBoard : MonoBehaviour
         obstacleMap = gameObject.FindChildComponent<ObstacleMap>(OBSTACLE_MAP_OBJ_NAME);
         obstacleMap.InitAwake(this);
         // } 맵에 지물을 초기화하여 배치한다
-        
+
     }
 
     //! 타일 인덱스를 받아서 해당 타일을 리턴하는 함수
@@ -107,7 +111,7 @@ public class MapBoard : MonoBehaviour
         idx2D_around4ways.Add(new Vector2Int(targetIdx2D.x, targetIdx2D.y - 1));
         idx2D_around4ways.Add(new Vector2Int(targetIdx2D.x, targetIdx2D.y + 1));
 
-        foreach(var idx2D in idx2D_around4ways)
+        foreach (var idx2D in idx2D_around4ways)
         {
             // 2D 좌표가 유효한지 검사
             if (idx2D.x.IsInRange(0, MapCellSize.x) == false) { continue; }
